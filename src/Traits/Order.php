@@ -43,16 +43,19 @@ trait Order
      * @Author: smile
      * @Date: 2021/5/31
      * @Time: 9:44
+     * @return object
      */
-    public function setLines($callback)
+    public function setLines($callback) : object
     {
         if (is_callable($callback)){
             $lines = $callback($this->orders['lines']);
 
-            if (empty($lines) && is_array($lines)){
+            if (!empty($lines) && is_array($lines)){
                 $this->orders['lines'] = $lines;
             }
         }
+
+        return $this;
     }
 
     /**
