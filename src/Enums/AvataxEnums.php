@@ -28,4 +28,6 @@ class AvataxEnums
     const ADMIN_ID = 0;
 
     const TZ = 'America/Los_Angeles';
+
+    const SHIPPING = 'Shipping';
 }

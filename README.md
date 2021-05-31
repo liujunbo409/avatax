@@ -59,21 +59,30 @@ $result = Avatax::setAddress([
         [
             'amount'=> 10000,
             'quantity'=>3,
-            'itemCode'=>'FS000001',
-            'taxCode' =>'Shipping',
-            'lineNumber' =>1,
             'description' => '描述'
         ],
         [
             'amount'=> 20000,
             'quantity'=>3,
-            'itemCode'=>'FS000002',
-            'taxCode' =>'Shipping',
-            'lineNumber' =>2,
             'description' => '描述'
         ],
     ]
 ])
+->setLines(function ($lines) {
+    foreach ($lines as $key => $value){
+        if ($value['type'] ?? '' == 'shipping'){
+            $lines[$key]['itemCode'] = 'Shipping';
+            $lines[$key]['taxCode']  = config('avatax.shippingTaxCode');
+        } else {
+            $lines[$key]['itemCode'] = $value['id'] ?? '';
+            $lines[$key]['taxCode']  = config('avatax.productsTaxCode');
+        }
+
+        $lines[$key]['number'] = $key + 1;
+    }
+
+    return $lines;
+})
 ->createTransaction('SalesOrder');
 ```
 

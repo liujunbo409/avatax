@@ -7,6 +7,10 @@ return [
 
     'channel'     => env('AVATAX_CHANNEL','avatax'),
 
+    'shippingTaxCode' => env('SHIPPING_TAX_CODE'),
+
+    'productsTaxCode' => env('PRODUCTS_TAX_CODE'),
+
     'shipFromAddress' => [
         'line1'      => env('AVATAX_SHIP_FROM_ADDRESS_LINE1','') ,
         'city'       => env('AVATAX_SHIP_FROM_ADDRESS_CITY',''),

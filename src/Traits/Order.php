@@ -37,6 +37,25 @@ trait Order
     }
 
     /**
+     * @Notes:callback 设置 lines
+     *
+     * @param $callback
+     * @Author: smile
+     * @Date: 2021/5/31
+     * @Time: 9:44
+     */
+    public function setLines($callback)
+    {
+        if (is_callable($callback)){
+            $lines = $callback($this->orders['lines']);
+
+            if (empty($lines) && is_array($lines)){
+                $this->orders['lines'] = $lines;
+            }
+        }
+    }
+
+    /**
      * @Notes:获取订单
      *
      * @return null

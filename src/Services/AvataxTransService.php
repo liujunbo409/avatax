@@ -147,7 +147,7 @@ class AvataxTransService
                 $line['quantity'],
                 $line['itemCode'],
                 $line['taxCode'],
-                $key+1
+                $line['number']
             );
 
             if (isset($line['description']) && !empty($line['description'])){
