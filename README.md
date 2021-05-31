@@ -15,7 +15,7 @@ composer require smbear/avatax
 发布配置文件
 
 ```
-php artisan vendor:public --provider=Smbear\Avatax\AvataxServiceProvider
+php artisan vendor:publish --provider=Smbear\Avatax\AvataxServiceProvider
 ```
 
 迁移数据表
