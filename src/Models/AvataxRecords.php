@@ -16,6 +16,7 @@ class AvataxRecords extends Model
         'address',
         'from',
         'order',
+        'lines',
         'status',
         'response'
     ];

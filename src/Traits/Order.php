@@ -3,75 +3,110 @@
 namespace Smbear\Avatax\Traits;
 
 use Smbear\Avatax\Enums\AvataxEnums;
+use Smbear\Avatax\Exceptions\ParamsException;
 
 trait Order
 {
-    public $orders = null;
+    public $order = [];
+
+    public $lines = [];
 
     /**
-     * @Notes:设置订单
+     * @Notes:设置order信息
      *
-     * @param array $params
+     * @param array $parameters
      * @return object
      * @Author: smile
-     * @Date: 2021/5/27
-     * @Time: 18:11
+     * @Date: 2021/5/31
+     * @Time: 18:27
      */
-    public function setOrder(array $params = []) : object
+    public function setOrder(array $parameters) : object
     {
-        $params = avatax_format_params($params);
+        $parameters = avatax_format_params($parameters);
 
-        $this->orders = [
-            'code'                  => $params['documentCode'] ?? '',
-            'customerCode'          => $params['customerCode'] ?? 0,
-            'entityUseCode'         => $params['customerCode'] ?? 0,
-            'currencyCode'          => $params['currencyCode'] ?? AvataxEnums::CURRENCY_CODE,
-            'exchangeRate'          => $params['exchangeRate'] ?? AvataxEnums::EXCHANGE_RATE,
-            'description'           => $params['description']  ?? '',
-            'purchaseOrderNo'       => $params['purchaseOrderNo'] ?? '',
-            'salespersonCode'       => $params['salespersonCode'] ?? AvataxEnums::ADMIN_ID,
-            'lines'                 => $params['lines'] ?? []
+        $this->order = [
+            'code'                  => $parameters['documentCode'] ?? '',
+            'customerCode'          => $parameters['customerCode'] ?? AvataxEnums::CUSTOMER_CODE,
+            'entityUseCode'         => $parameters['customerCode'] ?? AvataxEnums::CUSTOMER_CODE,
+            'currencyCode'          => $parameters['currencyCode'] ?? AvataxEnums::CURRENCY_CODE,
+            'exchangeRate'          => $parameters['exchangeRate'] ?? AvataxEnums::EXCHANGE_RATE,
+            'description'           => $parameters['description']  ?? '',
+            'purchaseOrderNo'       => $parameters['purchaseOrderNo'] ?? '',
+            'salespersonCode'       => $parameters['salespersonCode'] ?? AvataxEnums::ADMIN_ID,
         ];
 
         return $this;
     }
 
     /**
-     * @Notes:callback 设置 lines
+     * @Notes:设置lines信息
      *
-     * @param $callback
-     * @Author: smile
-     * @Date: 2021/5/31
-     * @Time: 9:44
+     * @param $parameters
      * @return object
+     * @Author: smile
+     * @Date: 2021/6/1
+     * @Time: 10:10
      */
-    public function setLines($callback) : object
+    public function setLines($parameters) : object
     {
-        if (is_callable($callback)){
-            $lines = $callback($this->orders['lines']);
+        $parameters = avatax_format_params($parameters);
 
-            if (!empty($lines) && is_array($lines)){
-                $this->orders['lines'] = $lines;
+        foreach ($parameters as &$lines){
+            foreach ($lines as $key => $line){
+                if ($line['itemCode'] ?? '' == AvataxEnums::SHIPPING){
+                    $taxCode = config('avatax.shippingTaxCode');
+                } else {
+                    $taxCode = config('avatax.productsTaxCode');
+                }
+
+                $lines[$key] = [
+                    'amount'   => (float) $line['amount'] ?? 0 * (int) $line['quantity'] ?? 1,
+                    'quantity' => $line['quantity'] ?? 1,
+                    'itemCode' => $line['itemCode'] ?? '',
+                    'taxCode'  => $taxCode,
+                    'number'   => $key +1
+                ];
             }
         }
+
+        $this->lines = $parameters;
 
         return $this;
     }
 
     /**
-     * @Notes:获取订单
+     * @Notes:获取order
      *
-     * @return null
+     * @return array
      * @Author: smile
      * @Date: 2021/5/27
      * @Time: 18:11
+     * @throws ParamsException
      */
-    public function getOrder()
+    public function getOrder() : array
     {
-        if (is_null($this->orders)){
-            throw new ParamsException('orders 参数异常，请先通过 setOrder 设置参数');
+        if (empty($this->order)){
+            throw new ParamsException('order 参数异常，请先通过 setOrder 设置参数');
         }
 
-        return $this->orders;
+        return $this->order;
+    }
+
+    /**
+     * @Notes:获取lines
+     *
+     * @return array
+     * @Author: smile
+     * @Date: 2021/6/1
+     * @Time: 10:10
+     * @throws ParamsException
+     */
+    public function getLines() : array
+    {
+        if (empty($this->lines)){
+            throw new ParamsException('lines 参数异常，请先通过 setLines 设置参数');
+        }
+
+        return $this->lines;
     }
 }

@@ -69,13 +69,14 @@ if (!function_exists('avatax_get_trans')){
 }
 
 if (!function_exists('avatax_get_save_data')){
-    function avatax_get_save_data(int $userId,string $documentId,array $address,array $from,array $order,int $status,$response):array{
+    function avatax_get_save_data(int $userId,string $documentId,array $address,array $from,array $order,array $lines,int $status,$response):array{
         return [
             'user_id'     => $userId,
             'document_id' => $documentId,
             'address'     => json_encode($address),
             'from'        => json_encode($from),
             'order'       => json_encode($order),
+            'lines'       => json_encode($lines),
             'status'      => (int) $status,
             'response'    => is_string($response) ?: json_encode((array) $response)
         ];

@@ -65,6 +65,7 @@ class Avatax implements AvataxInterface
         }
 
         $address = $this->getAddress();
+        $lines   = $this->getLines();
         $order   = $this->getOrder();
 
         try{
@@ -74,28 +75,26 @@ class Avatax implements AvataxInterface
                 if ($addressResult['type'] == AvaTaxEnums::ADDRESS_ERROR_TYPE_DEFAULT){
                     $address['line1'] = 'GENERAL DELIVERY';
                 } else {
-                    event(new SaveDataEvent(avatax_get_save_data($order['customerCode'],$order['code'],$address,$this->getFromAddress(),$order,true,$addressResult),$type));
+                    event(new SaveDataEvent(avatax_get_save_data($order['customerCode'],$order['code'],$address,$this->getFromAddress(),$order,$lines,true,$addressResult),$type));
 
                     return avatax_return_error('address error',$addressResult);
                 }
             }
 
-            $transActionResult = $this->transService->transaction($type,$address,$order,$this->getFromAddress());
+            $transActionResult = $this->transService->transaction($type,$address,$order,$lines,$this->getFromAddress());
 
-            event(new SaveDataEvent(avatax_get_save_data($order['customerCode'],$order['code'],$address,$this->getFromAddress(),$order,true,$transActionResult),$type));
+            event(new SaveDataEvent(avatax_get_save_data($order['customerCode'],$order['code'],$address,$this->getFromAddress(),$order,$lines,true,$transActionResult),$type));
 
-            if (is_string($transActionResult)){
-                return avatax_return_error($transActionResult);
+            foreach ($transActionResult as $result){
+                if (is_string($result)) return avatax_return_error($result);
             }
 
-            if (is_object($transActionResult)){
-                return avatax_return_success('success',(array) $transActionResult);
-            }
+            return avatax_return_success('success',(array) $transActionResult);
         }catch (\Exception $exception){
             if (!$exception instanceof AvataxException){
                 Log::channel(config('avatax.channel'))->info($exception);
 
-                return avatax_return_error('api error',[]);
+                return avatax_return_error('api error '.$exception->getMessage(),[]);
             }
 
             throw new $exception;

@@ -26,6 +26,7 @@ class AvataxTransService
      * @param string $type
      * @param array $address
      * @param array $order
+     * @param array $lines
      * @param array $fromAddress
      * @return mixed
      * @throws AvataxException
@@ -34,25 +35,27 @@ class AvataxTransService
      * @Date: 2021/5/27
      * @Time: 17:31
      */
-    public function transaction(string $type,array $address,array $order,array $fromAddress)
+    public function transaction(string $type,array $address,array $order,array $lines,array $fromAddress): array
     {
-        if (empty($order['lines'])){
-            throw new ParamsException('参数 lines异常');
+        $result = [];
+
+        foreach ($lines as $key => $line){
+            $this->getBuild($type,$order['customerCode'])
+                ->shipToAddress($address)
+                ->shipFromAddress($fromAddress)
+                ->withLines($line)
+                ->withMethod($order);
+
+            $builder = $this->build;
+
+            if ($type == 'SalesInvoice'){
+                $builder = $builder->withCommit();
+            }
+
+            $result[$key] = $builder->createOrAdjust();
         }
 
-        $this->getBuild($type,$order['customerCode'])
-            ->shipToAddress($address)
-            ->shipFromAddress($fromAddress)
-            ->withLines($order['lines'])
-            ->withMethod($order);
-
-        $builder = $this->build;
-
-        if ($type == 'SalesInvoice'){
-            $builder = $builder->withCommit();
-        }
-
-        return $builder->createOrAdjust();
+        return $result;
     }
 
     /**

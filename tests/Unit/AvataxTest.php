@@ -18,51 +18,55 @@ class AvataxTest extends TestCase
     {
         $type = 'SalesOrder';
 
-        $res = $result = Avatax::setAddress([
-            'line1' => '380 Centerpoint Blvd ',
-            'city' => 'New Castle',
-            'country' => 'US',
-            'postalCode' => '1934720',
-            'region' => 'DE'
-        ])->setOrder([
-            'documentCode'     => 'FS000000001',
-            'customerCode'     => 123456789,
-            'entityUseCode'    => 123456789,
-            'currencyCode'     => 'USD',
-            'exchangeRate'     => 1,
-            'description'      => '描述',
-            'purchaseOrderNo'  => 'FS000000001',
-            'salespersonCode'  => 123,
-            'lines'            =>[
-                [
-                    'amount'=> 10000,
-                    'quantity'=>3,
-                    'description' => '描述'
-                ],
-                [
-                    'amount'=> 20000,
-                    'quantity'=>3,
-                    'description' => '描述'
-                ],
-            ]
+        $result = Avatax::setAddress([
+            'line1'      => '380 Centerpoint Blvd ',
+            'city'       => 'New Castle',
+            'country'    => 'US',
+            'postalCode' => '19720',
+            'region'     => 'DE'
         ])
-            ->setLines(function ($lines) {
-                foreach ($lines as $key => $value){
-                    if ($value['type'] ?? '' == 'shipping'){
-                        $lines[$key]['itemCode'] = 'Shipping';
-                        $lines[$key]['taxCode']  = config('avatax.shippingTaxCode');
-                    } else {
-                        $lines[$key]['itemCode'] = $value['id'] ?? '';
-                        $lines[$key]['taxCode']  = config('avatax.productsTaxCode');
-                    }
+            ->setOrder([
+                'documentCode'     => 'FS000000001',
+                'customerCode'     => 123456789,
+                'entityUseCode'    => 123456789,
+                'currencyCode'     => 'USD',
+                'exchangeRate'     => 1,
+                'description'      => '描述',
+                'purchaseOrderNo'  => 'FS000000001',
+                'salespersonCode'  => 123,
+            ])
+            ->setLines([
+                'local' =>[
+                    [
+                        "quantity" => "1",
+                        "description" => "Cisco QSFP-40G-SR4 Compatible 40GBASE-SR4 QSFP+ 850nm 150m DOM MTP/MPO MMF Optical Transceiver Module",
+                        "amount" => "40.8000000000000",
+                        "itemCode" => "36157",
+                    ],
+                    [
+                        "quantity" => 1,
+                        "description" => "upsgroundeastzones_upsgroundeastzones",
+                        "amount" => "0.00",
+                        "itemCode" => "shipping",
+                    ],
+                ],
+                'delay' =>[
+                    [
+                        "quantity" => "1",
+                        "description" => "Cisco QSFP-40G-SR4 Compatible 40GBASE-SR4 QSFP+ 850nm 150m DOM MTP/MPO MMF Optical Transceiver Module",
+                        "amount" => "40.8000000000000",
+                        "itemCode" => "36157",
+                    ],
+                    [
+                        "quantity" => 1,
+                        "description" => "upsgroundeastzones_upsgroundeastzones",
+                        "amount" => "0.00",
+                        "itemCode" => "shipping",
+                    ],
+                ]
+            ])
+            ->createTransaction('SalesInvoice');
 
-                    $lines[$key]['number'] = $key + 1;
-                }
-
-                return $lines;
-            })
-            ->createTransaction('SalesOrder');
-
-        $this->assertIsArray($res);
+        $this->assertIsArray($result);
     }
 }

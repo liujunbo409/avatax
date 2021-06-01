@@ -23,7 +23,7 @@ class AvataxEnums
 
     const EXCHANGE_RATE = 1;
 
-    const CURRENCY_VALUE = 1;
+    const CUSTOMER_CODE = 0;
 
     const ADMIN_ID = 0;
 
