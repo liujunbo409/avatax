@@ -53,7 +53,7 @@ class Avatax implements AvataxInterface
      * @param string $type
      * @return array
      * @throws Exceptions\AvataxException
-     * @throws ParamsException|Exceptions\ConfigException
+     * @throws ParamsException
      * @Author: smile
      * @Date: 2021/5/27
      * @Time: 16:14
@@ -90,14 +90,14 @@ class Avatax implements AvataxInterface
             }
 
             return avatax_return_success('success',(array) $transActionResult);
-        }catch (\Exception $exception){
+        }catch (\Throwable $exception){
             if (!$exception instanceof AvataxException){
                 Log::channel(config('avatax.channel'))->info($exception);
 
                 return avatax_return_error('api error '.$exception->getMessage(),[]);
             }
 
-            throw new $exception;
+            throw $exception;
         }
     }
 }
