@@ -77,7 +77,7 @@ class Avatax implements AvataxInterface
                 } else {
                     event(new SaveDataEvent(avatax_get_save_data($order['customerCode'],$order['code'],$address,$this->getFromAddress(),$order,$lines,true,$addressResult),$type));
 
-                    return avatax_return_error('address error',$addressResult);
+                    return avatax_return_error($addressResult['message'] ?? 'address error',[]);
                 }
             }
 
