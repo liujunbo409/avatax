@@ -53,7 +53,7 @@ trait Order
 
         foreach ($parameters as &$lines){
             foreach ($lines as $key => $line){
-                if ($line['itemCode'] ?? '' == AvataxEnums::SHIPPING){
+                if (strtolower($line['itemCode'] ?? '') == AvataxEnums::SHIPPING){
                     $taxCode = config('avatax.shippingTaxCode');
                 } else {
                     $taxCode = config('avatax.productsTaxCode');

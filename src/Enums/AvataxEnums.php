@@ -29,5 +29,5 @@ class AvataxEnums
 
     const TZ = 'America/Los_Angeles';
 
-    const SHIPPING = 'Shipping';
+    const SHIPPING = 'shipping';
 }
