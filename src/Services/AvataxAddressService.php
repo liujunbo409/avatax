@@ -10,26 +10,19 @@ use Smbear\Avatax\Exceptions\ConfigException;
 
 class AvataxAddressService
 {
-    public $clientService;
-
-    public function __construct()
-    {
-        $this->clientService = new AvataxClientService();
-    }
-
     /**
      * @Notes:解析地址
      *
+     * @param object $client
      * @param array $address
      * @param string $local
      * @return array
      * @throws ConfigException
-     * @throws AvataxException
      * @Author: smile
      * @Date: 2021/5/27
      * @Time: 15:48
      */
-    public function resolveAddress(array $address,string $local): array
+    public function resolveAddress(object $client,array $address,string $local): array
     {
         $ruleResult  = $this->rulesResolveAddress($address,$local);
 
@@ -43,28 +36,24 @@ class AvataxAddressService
             return avatax_address_return('invalid shipping address','Address postalCode',[],'error',AvataxEnums::ADDRESS_ERROR_TYPE_VALIDATE);
         }
 
-        return $this->ApiResolveAddress($address,$local);
+        return $this->ApiResolveAddress($client,$address,$local);
 
     }
 
     /**
      * @Notes: api验证接口
      *
+     * @param object $client
      * @param array $address
      * @param string $local
      * @return array
-     * @throws ConfigException
-     * @throws AvataxException
      * @Author: smile
      * @Date: 2021/5/27
      * @Time: 15:48
      */
-    public function ApiResolveAddress(array $address,string $local): array
+    public function ApiResolveAddress(object $client,array $address,string $local): array
     {
-        $response = $this
-            ->clientService
-            ->getClient()
-            ->resolveAddressPost($address);
+        $response = $client->resolveAddressPost($address);
 
         if (is_string($response)){
             return avatax_address_return($response,'',[],false,'network');

@@ -5,41 +5,31 @@ namespace Smbear\Avatax\Services;
 use Illuminate\Support\Carbon;
 use Avalara\TransactionBuilder;
 use Smbear\Avatax\Enums\AvaTaxEnums;
-use Smbear\Avatax\Exceptions\AvataxException;
-use Smbear\Avatax\Exceptions\ConfigException;
 
 class AvataxTransService
 {
     public $build;
 
-    public $clientService;
-
-    public function __construct()
-    {
-        $this->clientService = new AvataxClientService();
-    }
-
     /**
      * @Notes:计算税费
      *
+     * @param object $client
      * @param string $type
      * @param array $address
      * @param array $order
      * @param array $lines
      * @param array $fromAddress
      * @return mixed
-     * @throws AvataxException
-     * @throws ConfigException
      * @Author: smile
      * @Date: 2021/5/27
      * @Time: 17:31
      */
-    public function transaction(string $type,array $address,array $order,array $lines,array $fromAddress): array
+    public function transaction(object $client,string $type,array $address,array $order,array $lines,array $fromAddress): array
     {
         $result = [];
 
         foreach ($lines as $key => $line){
-            $this->getBuild($type,$order['customerCode'])
+            $this->getBuild($client,$type,$order['customerCode'])
                 ->shipToAddress($address)
                 ->shipFromAddress($fromAddress)
                 ->withLines($line)
@@ -60,19 +50,18 @@ class AvataxTransService
     /**
      * @Notes:建立模型
      *
+     * @param object $client
      * @param string $type
      * @param int $customerCode
      * @return object
-     * @throws AvataxException
-     * @throws ConfigException
      * @Author: smile
      * @Date: 2021/5/27
      * @Time: 17:28
      */
-    public function getBuild(string $type,int $customerCode = 0) : object
+    public function getBuild(object $client,string $type,int $customerCode = 0) : object
     {
         $this->build = new TransactionBuilder(
-            $this->clientService->getClient(),
+            $client,
             avatax_get_config_value('companyCode'),
             $type,
             $customerCode,

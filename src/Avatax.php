@@ -11,6 +11,7 @@ use Smbear\Avatax\Contracts\AvataxInterface;
 use Smbear\Avatax\Exceptions\ParamsException;
 use Smbear\Avatax\Exceptions\AvataxException;
 use Smbear\Avatax\Services\AvataxTransService;
+use Smbear\Avatax\Services\AvataxClientService;
 use Smbear\Avatax\Services\AvataxAddressService;
 
 class Avatax implements AvataxInterface
@@ -23,11 +24,15 @@ class Avatax implements AvataxInterface
 
     public $transService;
 
+    public $clientService;
+
     public function __construct()
     {
         $this->addressService = new AvataxAddressService();
 
         $this->transService   = new AvataxTransService();
+
+        $this->clientService  = new AvataxClientService();
     }
 
     /**
@@ -69,7 +74,7 @@ class Avatax implements AvataxInterface
         $order   = $this->getOrder();
 
         try{
-            $addressResult = $this->addressService->resolveAddress($address,$this->local);
+            $addressResult = $this->addressService->resolveAddress($this->clientService->getClient(),$address,$this->local);
 
             if($addressResult['status'] == false){
                 if ($addressResult['type'] == AvaTaxEnums::ADDRESS_ERROR_TYPE_DEFAULT){
@@ -81,7 +86,7 @@ class Avatax implements AvataxInterface
                 }
             }
 
-            $transActionResult = $this->transService->transaction($type,$address,$order,$lines,$this->getFromAddress());
+            $transActionResult = $this->transService->transaction($this->clientService->getClient(),$type,$address,$order,$lines,$this->getFromAddress());
 
             event(new SaveDataEvent(avatax_get_save_data($order['customerCode'],$order['code'],$address,$this->getFromAddress(),$order,$lines,true,$transActionResult),$type));
 
