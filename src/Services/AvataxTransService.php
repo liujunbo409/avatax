@@ -7,7 +7,6 @@ use Avalara\TransactionBuilder;
 use Smbear\Avatax\Enums\AvaTaxEnums;
 use Smbear\Avatax\Exceptions\AvataxException;
 use Smbear\Avatax\Exceptions\ConfigException;
-use Smbear\Avatax\Exceptions\ParamsException;
 
 class AvataxTransService
 {
@@ -95,7 +94,7 @@ class AvataxTransService
     public function shipToAddress(array $address) : object
     {
         $this->build = $this->build->withAddress(
-            'ShipFrom',
+            'ShipTo',
             $address['line1'],
             $address['line2'],
             $address['line3'],
@@ -120,7 +119,7 @@ class AvataxTransService
     public function shipFromAddress(array $fromAddress) : object
     {
         $this->build = $this->build->withAddress(
-            'ShipTo',
+            'ShipFrom',
             $fromAddress['line1'],
             $fromAddress['line2'],
             $fromAddress['line3'],
