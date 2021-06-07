@@ -124,16 +124,16 @@ class Avatax implements AvataxInterface
         $data = json_decode(json_encode($data),true);
 
         foreach ($data as $k => $v) {
-            $result['transition_id'] = $v['id'] ?? 0;
-            $result['totalTax']      = $v['totalTax'] ?? 0;
-            $result['totalTaxable']  = $v['totalTaxable'] ?? 0;
-            $result['totalAmount']   = $v['totalAmount'] ?? 0;
-            $result['totalExempt']   = $v['totalExempt'] ?? 0;
-            $result['products']      = [];
+            $result[$k]['transition_id'] = $v['id'] ?? 0;
+            $result[$k]['totalTax']      = $v['totalTax'] ?? 0;
+            $result[$k]['totalTaxable']  = $v['totalTaxable'] ?? 0;
+            $result[$k]['totalAmount']   = $v['totalAmount'] ?? 0;
+            $result[$k]['totalExempt']   = $v['totalExempt'] ?? 0;
+            $result[$k]['products']      = [];
             if (!empty($v['lines'])) {
 
                 foreach ($v['lines'] as $vv) {
-                    $result['products'][$vv['itemCode']] = [
+                    $result[$k]['products'][$vv['itemCode']] = [
                         'tax'           => $vv['tax'] ?? '',
                         'taxableAmount' => $vv['taxableAmount'] ?? 0,
                         'lineAmount'    => $vv['lineAmount'] ?? 0,
@@ -141,7 +141,7 @@ class Avatax implements AvataxInterface
                     ];
 
                     foreach ($vv['details'] as $vvv) {
-                        $result['products'][$vv['itemCode']]['rate'][] = [
+                        $result[$k]['products'][$vv['itemCode']]['rate'][] = [
                             'jurisName'      => $vvv['jurisName'] ?? '',
                             'jurisdictionId' => $vvv['jurisdictionId'] ?? 0,
                             'tax'            => $vvv['tax'] ?? '',
