@@ -20,7 +20,8 @@
   "require": {
     "php": "^7.3",
 	"illuminate/support":"^8.0",
-    "karen_he/avataxclient": "20.14"
+    "karen_he/avataxclient": "20.14",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",

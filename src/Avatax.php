@@ -105,4 +105,54 @@ class Avatax implements AvataxInterface
             throw $exception;
         }
     }
+
+    /**
+     * @Notes:返回响应的数据
+     *
+     * @param array $data
+     * @return array
+     * @Author: smile
+     * @Date: 2021/6/7
+     * @Time: 11:19
+     */
+    public function response(array $data): array
+    {
+        $result = [];
+
+        if (empty($data)) return $result;
+
+        $data = json_decode(json_encode($data),true);
+
+        foreach ($data as $k => $v) {
+            $result['transition_id'] = $v['id'] ?? 0;
+            $result['totalTax']      = $v['totalTax'] ?? 0;
+            $result['totalTaxable']  = $v['totalTaxable'] ?? 0;
+            $result['totalAmount']   = $v['totalAmount'] ?? 0;
+            $result['totalExempt']   = $v['totalExempt'] ?? 0;
+            $result['products']      = [];
+            if (!empty($v['lines'])) {
+
+                foreach ($v['lines'] as $vv) {
+                    $result['products'][$vv['itemCode']] = [
+                        'tax'           => $vv['tax'] ?? '',
+                        'taxableAmount' => $vv['taxableAmount'] ?? 0,
+                        'lineAmount'    => $vv['lineAmount'] ?? 0,
+                        'qty'           => $vv['quantity'] ?? 0
+                    ];
+
+                    foreach ($vv['details'] as $vvv) {
+                        $result['products'][$vv['itemCode']]['rate'][] = [
+                            'jurisName'      => $vvv['jurisName'] ?? '',
+                            'jurisdictionId' => $vvv['jurisdictionId'] ?? 0,
+                            'tax'            => $vvv['tax'] ?? '',
+                            'rate'           => $vvv['rate'] ?? 0,
+                            'taxName'        => $vvv['taxName'] ?? ''
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
 }
