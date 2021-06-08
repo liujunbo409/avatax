@@ -9,4 +9,6 @@ interface AvataxInterface
     public function createTransaction(string $type): array;
 
     public function response(array $data): array;
+
+    public function getAddressStatus(array $data): bool;
 }

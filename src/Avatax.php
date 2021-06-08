@@ -107,6 +107,27 @@ class Avatax implements AvataxInterface
     }
 
     /**
+     * @Notes: 获取到地址是否被启动的状态
+     *
+     * @param array $data
+     * @return bool|null
+     * @Author: smile
+     * @Date: 2021/6/8
+     * @Time: 12:21
+     */
+    public function getAddressStatus(array $data): bool
+    {
+        $data = current($data);
+        $address = current($data->addresses);
+
+        if ($address->line1 == 'GENERAL DELIVERY'){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @Notes:返回响应的数据
      *
      * @param array $data
