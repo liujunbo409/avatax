@@ -192,7 +192,7 @@ class AvataxAddressService
             $statesCode = $model->where('zip',$address['postalCode'])
                 ->value('states_code');
 
-            if (!empty($statesCode) && $statesCode != $address['region']){
+            if (empty($statesCode) || ($statesCode != $address['region'])){
                 return false;
             }
 
