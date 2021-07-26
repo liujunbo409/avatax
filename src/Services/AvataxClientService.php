@@ -76,7 +76,7 @@ class AvataxClientService
                 return $this->client;
             }
 
-            throw new AvataxException('client 连接失败');
+            throw new AvataxException('Tax calculation failure');
         }
 
         return $this->client;
