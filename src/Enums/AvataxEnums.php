@@ -30,4 +30,6 @@ class AvataxEnums
     const TZ = 'America/Los_Angeles';
 
     const SHIPPING = 'shipping';
+
+    const ERROR = '<br/>The validated address is ';
 }

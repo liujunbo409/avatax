@@ -78,7 +78,7 @@ class AvataxAddressService
                 $status = $this->verifyValidatedAddresses($response);
 
                 if ($status == false){
-                    $message = $message .$this->getValidatedAddresses($response->validatedAddresses);
+                    $message = $message.AvataxEnums::ERROR.$this->getValidatedAddresses($response->validatedAddresses);
 
                     return avatax_address_return($message,'',[],false,AvataxEnums::ADDRESS_ERROR_TYPE_VALIDATE);
                 }
