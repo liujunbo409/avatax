@@ -5,7 +5,6 @@ namespace Smbear\Avatax\Services;
 use Smbear\Avatax\Enums\AvataxEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
-use Smbear\Avatax\Exceptions\AvataxException;
 use Smbear\Avatax\Exceptions\ConfigException;
 
 class AvataxAddressService

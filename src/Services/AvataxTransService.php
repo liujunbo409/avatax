@@ -142,7 +142,7 @@ class AvataxTransService
             );
 
             if (isset($line['description']) && !empty($line['description'])){
-                $this->build->withLineDescription($line['description']);
+                $this->build->withLineDescription(mb_substr($line['description'],0,60));
             }
         }
 

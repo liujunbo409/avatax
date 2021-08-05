@@ -30,7 +30,7 @@ trait Order
             'entityUseCode'         => $parameters['customerCode'] ?? AvataxEnums::CUSTOMER_CODE,
             'currencyCode'          => $parameters['currencyCode'] ?? AvataxEnums::CURRENCY_CODE,
             'exchangeRate'          => $parameters['exchangeRate'] ?? AvataxEnums::EXCHANGE_RATE,
-            'description'           => $parameters['description']  ?? '',
+            'description'           => mb_substr($parameters['description'],0,60)  ?? '',
             'purchaseOrderNo'       => $parameters['purchaseOrderNo'] ?? '',
             'salespersonCode'       => $parameters['salespersonCode'] ?? AvataxEnums::ADMIN_ID,
         ];
