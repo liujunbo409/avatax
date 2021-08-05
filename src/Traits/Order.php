@@ -31,6 +31,7 @@ trait Order
             'currencyCode'          => $parameters['currencyCode'] ?? AvataxEnums::CURRENCY_CODE,
             'exchangeRate'          => $parameters['exchangeRate'] ?? AvataxEnums::EXCHANGE_RATE,
             'purchaseOrderNo'       => $parameters['purchaseOrderNo'] ?? '',
+            'description'           => isset($parameters['description']) ? mb_substr($parameters['description'],0,60)  : '',
             'salespersonCode'       => $parameters['salespersonCode'] ?? AvataxEnums::ADMIN_ID,
         ];
 
@@ -63,8 +64,7 @@ trait Order
                     'quantity' => $line['quantity'] ?? 1,
                     'itemCode' => $line['itemCode'] ?? '',
                     'taxCode'  => $taxCode,
-                    'number'   => $key +1,
-                    'description' => mb_substr($line['description'],0,60)  ?? '',
+                    'number'   => $key +1
                 ];
             }
         }
