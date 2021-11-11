@@ -146,27 +146,27 @@ class Avatax implements AvataxInterface
 
         foreach ($data as $k => $v) {
             $result[$k]['transition_id'] = $v['id'] ?? 0;
-            $result[$k]['totalTax']      = $v['totalTax'] ?? 0;
-            $result[$k]['totalTaxable']  = $v['totalTaxable'] ?? 0;
-            $result[$k]['totalAmount']   = $v['totalAmount'] ?? 0;
-            $result[$k]['totalExempt']   = $v['totalExempt'] ?? 0;
+            $result[$k]['totalTax']      = strval($v['totalTax']) ?? '0';
+            $result[$k]['totalTaxable']  = strval($v['totalTaxable']) ?? '0';
+            $result[$k]['totalAmount']   = strval($v['totalAmount']) ?? '0';
+            $result[$k]['totalExempt']   = strval($v['totalExempt']) ?? '0';
             $result[$k]['products']      = [];
             if (!empty($v['lines'])) {
 
                 foreach ($v['lines'] as $vv) {
                     $result[$k]['products'][$vv['itemCode']] = [
-                        'tax'           => $vv['tax'] ?? '',
-                        'taxableAmount' => $vv['taxableAmount'] ?? 0,
-                        'lineAmount'    => $vv['lineAmount'] ?? 0,
+                        'tax'           => strval($vv['tax']) ?? '0',
+                        'taxableAmount' => strval($vv['taxableAmount']) ?? '0',
+                        'lineAmount'    => strval($vv['lineAmount']) ?? '0',
                         'qty'           => $vv['quantity'] ?? 0
                     ];
 
                     foreach ($vv['details'] as $vvv) {
                         $result[$k]['products'][$vv['itemCode']]['rate'][] = [
                             'jurisName'      => $vvv['jurisName'] ?? '',
-                            'jurisdictionId' => $vvv['jurisdictionId'] ?? 0,
-                            'tax'            => $vvv['tax'] ?? '',
-                            'rate'           => $vvv['rate'] ?? 0,
+                            'jurisdictionId' => $vvv['jurisdictionId'] ?? null,
+                            'tax'            => strval($vvv['tax']) ?? '0',
+                            'rate'           => strval($vvv['rate']) ?? '0',
                             'taxName'        => $vvv['taxName'] ?? ''
                         ];
                     }
