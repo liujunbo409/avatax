@@ -41,7 +41,7 @@ class AvataxAddressService
 
     /**
      * @Notes: api验证接口
-     *
+     * 最后开始判断是否是内部错误
      * @param object $client
      * @param array $address
      * @param string $local
@@ -61,12 +61,6 @@ class AvataxAddressService
         if (is_object($response)){
             $message = avatax_get_trans('error',$local);
 
-            if (isset($response->messages) && is_object($response->messages[0]) && $response->messages[0]->severity == 'Error') {
-                $message = $response->messages[0]->details ?: avatax_get_trans('validated',$local);
-
-                return avatax_address_return($message,$response->messages[0]->refersTo,[],false,AvataxEnums::ADDRESS_ERROR_TYPE_DEFAULT);
-            }
-
             $resolutionQuality = $response->resolutionQuality ?? '';
 
             if (!empty($resolutionQuality) && in_array($resolutionQuality,AvataxEnums::RESOLUTION_QUALITY_VALIDATE)){
@@ -85,6 +79,12 @@ class AvataxAddressService
 
             if (isset($response->validatedAddresses[0]) && is_object($response->validatedAddresses[0]) && $response->validatedAddresses[0]->addressType == 'UnknownAddressType'){
                 return avatax_address_return($message,'',[],false,AvataxEnums::ADDRESS_ERROR_TYPE_DEFAULT);
+            }
+
+            if (isset($response->messages) && is_object($response->messages[0]) && $response->messages[0]->severity == 'Error') {
+                $message = $response->messages[0]->details ?: avatax_get_trans('validated',$local);
+
+                return avatax_address_return($message,$response->messages[0]->refersTo,[],false,AvataxEnums::ADDRESS_ERROR_TYPE_DEFAULT);
             }
 
             return avatax_address_return('success',[],'',true);
